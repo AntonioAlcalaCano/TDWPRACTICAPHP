@@ -30,8 +30,7 @@ class EntityController extends ElementBaseController
      */
     public function cget(Request $request, Response $response): Response
     {
-        // TODO
-        return Error::error($response, 501);
+        return $this->getAllElements($response, Entity::class, 'entities');
     }
 
     /**
@@ -45,8 +44,7 @@ class EntityController extends ElementBaseController
      */
     public function get(Request $request, Response $response, array $args): Response
     {
-        // TODO
-        return Error::error($response, 501);
+        return $this->getElementById($response, Entity::class, $args['entityId']);
     }
 
     /**
@@ -59,8 +57,7 @@ class EntityController extends ElementBaseController
      */
     public function getEntityname(Request $request, Response $response, array $args): Response
     {
-        // TODO
-        return Error::error($response, 501);
+        return $this->getElementByName($response, Entity::class, $args['entityname']);
     }
 
     /**
@@ -73,8 +70,7 @@ class EntityController extends ElementBaseController
      */
     public function delete(Request $request, Response $response, array $args): Response
     {
-        // TODO
-        return Error::error($response, 501);
+        return $this->opDelete($request, $response, Entity::class, $args['entityId']);
     }
 
     /**
@@ -86,8 +82,7 @@ class EntityController extends ElementBaseController
      */
     public function post(Request $request, Response $response): Response
     {
-        // TODO
-        return Error::error($response, 501);
+        return $this->opPost($request, $response, Entity::class);
     }
 
     /**
@@ -100,7 +95,7 @@ class EntityController extends ElementBaseController
      */
     public function put(Request $request, Response $response, array $args): Response
     {
-        // TODO
-        return Error::error($response, 501);
+        $args['id'] = $args['entityId'];
+        return $this->opPut($request, $response, $args, Entity::class);
     }
 }
