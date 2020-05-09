@@ -30,8 +30,7 @@ class PersonController extends ElementBaseController
      */
     public function cget(Request $request, Response $response): Response
     {
-        // TODO
-        return Error::error($response, 501);
+        return $this->getAllElements($response, Person::class, 'persons');
     }
 
     /**
@@ -45,8 +44,7 @@ class PersonController extends ElementBaseController
      */
     public function get(Request $request, Response $response, array $args): Response
     {
-        // TODO
-        return Error::error($response, 501);
+        return $this->getElementById($response, Person::class, $args['personId']);
     }
 
     /**
@@ -59,8 +57,7 @@ class PersonController extends ElementBaseController
      */
     public function getPersonname(Request $request, Response $response, array $args): Response
     {
-        // TODO
-        return Error::error($response, 501);
+        return $this->getElementByName($response, Person::class, $args['personname']);
     }
 
     /**
@@ -73,8 +70,7 @@ class PersonController extends ElementBaseController
      */
     public function delete(Request $request, Response $response, array $args): Response
     {
-        // TODO
-        return Error::error($response, 501);
+        return $this->opDelete($request, $response, Person::class, $args['personId']);
     }
 
     /**
@@ -86,8 +82,7 @@ class PersonController extends ElementBaseController
      */
     public function post(Request $request, Response $response): Response
     {
-        // TODO
-        return Error::error($response, 501);
+        return $this->opPost($request, $response, Person::class);
     }
 
     /**
@@ -100,7 +95,7 @@ class PersonController extends ElementBaseController
      */
     public function put(Request $request, Response $response, array $args): Response
     {
-        // TODO
-        return Error::error($response, 501);
+        $args['id'] = $args['personId'];
+        return $this->opPut($request, $response, $args, Person::class);
     }
 }
