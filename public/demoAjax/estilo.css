@@ -1,0 +1,153 @@
+/*{
+	border: 1px solid #4CAF50;
+}*/
+body{
+    background-color: black;
+    font-family: Arial;
+}
+
+header{
+    border: 1px solid #AFC900;
+    position:relative;
+    padding: 20px;
+    margin:auto;
+    width:auto;
+    height:50px;
+    color: #AFC900;
+    font-size:50px;
+    text-align:center;
+    line-height:60px;
+}
+
+nav{
+    position:relative;
+    width:1000px;
+    height:45px;
+    margin-top: 20px;
+    margin-bottom: 60px;
+}
+
+form{
+    color: #AFC900;
+    padding: 20px;
+    margin:auto;
+}
+
+[id^=tabla]{
+    color:#AFC900;
+    padding: 20px;
+    position:relative;
+    margin-right: 100px;
+    bottom: auto;
+    float: left;
+}
+[id$=Info]{
+    margin: auto 400px;
+    color:#AFC900;
+}
+a:link{
+    text-decoration: none;
+}
+a{
+    color:#AFC900;
+}
+a:hover{
+    color:#00DEC6;
+}
+figure{
+    margin-left: -40px;
+}
+[id=creacionFormulario]{
+    margin: auto 600px;
+    border: 1px solid #AFC900;
+    padding-right: 10;
+}
+[type=text]{
+    width: 400px;
+}
+section{
+    position:relative;
+    margin:auto;
+    width:1000px;
+    height:auto;
+}
+
+section h1{
+    position:relative;
+    top:15px;
+    left:27px;
+    color:#AFC900;
+    font-size: 30px;
+    font-weight:100;
+}
+
+section hr{
+    position:relative;
+    top:20px;
+    width:950px;
+    margin:auto;
+    border:1px solid #c6c6c6c6;
+}
+
+section p{
+    position:relative;
+    top:40px;
+    width:1200px;
+    margin:auto;
+    color:#AFC900;
+    text-align:justify;
+}
+
+section img{
+    float:left;
+    width:272px;
+    margin-right:20px;
+    margin-bottom:40px;
+}
+* {
+    margin:0px;
+    padding:0px;
+}
+#headerNav {
+    margin:50px;
+    padding: 50px;
+    width:500px;
+}
+ul, ol {
+    list-style:none;
+}
+
+.nav > li {
+    float:left;
+}
+
+.nav li a {
+    background-color: #ff7d7d;
+    color:#fff;
+    text-decoration:none;
+    padding:10px 12px;
+    display:block;
+}
+
+.nav li a:hover {
+    background-color:#434343;
+}
+
+.nav li ul {
+    display:none;
+    position:absolute;
+    min-width:140px;
+}
+
+.nav li:hover > ul {
+    display:block;
+}
+
+.nav li ul li {
+    position:relative;
+}
+
+.nav li ul li ul {
+    right:-140px;
+    top:0px;
+}

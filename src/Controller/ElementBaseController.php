@@ -273,11 +273,11 @@ class ElementBaseController
     protected function updateElement(Element $element, array $data): void
     {
         foreach ($data as $attr => $datum) {
-            ($attr === 'birthDate')
-                ? $element->setBirthDate(DateTime::createFromFormat('!Y-m-d', $datum))
+            ($attr === 'birthDate' && ($date = DateTime::createFromFormat('!Y-m-d', $datum)))
+                ? $element->setBirthDate($date)
                 : null;
-            ($attr === 'deathDate')
-                ? $element->setDeathDate(DateTime::createFromFormat('!Y-m-d', $datum))
+            ($attr === 'deathDate' && ($date = DateTime::createFromFormat('!Y-m-d', $datum)))
+                ? $element->setDeathDate($date)
                 : null;
             ($attr === 'imageUrl') ? $element->setImageUrl($datum) : null;
             ($attr === 'wikiUrl') ? $element->setWikiUrl($datum) : null;

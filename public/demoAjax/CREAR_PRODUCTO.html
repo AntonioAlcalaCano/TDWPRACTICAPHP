@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+    <title>TDW  PRACTICA  JAVASCRIPT</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="TDW  PRACTICA  JAVASCRIPT">
+    <meta name="keywords" content="TDW  PRACTICA  JAVASCRIPT">
+    <meta name="author" content="Antonio Alcalá Cano">
+    <script src="./codigo.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <link href="estilo.css" type="text/css" rel="stylesheet" media="">
+</head>
+
+<body onload="editProduct();">
+<header>
+    <b>Anales de la ciencia</b>
+</header>
+<nav id="navProduct">
+</nav>
+<form action="./SHOWED_INDEX.html" id="creacionFormulario">
+    <label>Nombre: </label>
+    <input type="text" id="nombre">
+    <br><br>
+    <label>Fecha de creacion: </label>
+    <input type="text" id="creacion">
+    <br><br>
+    <label>Muerte: </label>
+    <input type="text" id="muerte">
+    <br><br>
+    <label>Logo: </label>
+    <input type="text" id="logo">
+    <br><br>
+    <label>Wiki: </label>
+    <input type="text" id="wiki">
+    <br><br><br>
+    <input type="submit" value="Crear Producto" onclick="createProduct()" id= "botonCreacion">
+</form>
+
+</body>
+</html>

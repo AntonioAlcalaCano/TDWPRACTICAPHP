@@ -71,7 +71,8 @@ class LoginController
             ->withJson([
                 'token_type' => 'Bearer',
                 'expires_in' => $this->jwtAuth->getLifetime(),    // 14400
-                'access_token' => $token
+                'access_token' => $token,
+                //'role' => $user->getRoles()
             ])
             ->withHeader('Authorization', 'Bearer ' . $token);
     }

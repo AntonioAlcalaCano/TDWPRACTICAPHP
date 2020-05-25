@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>[TDW] ACiencia - Demo AJAX </title>
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="./codigo.js"></script>
 </head>
 <body>
     <form method="post" id="form-login">
@@ -17,27 +18,31 @@
     <code><span id="resultado"></span></code>
 
 <script>
+    logout();
     let authHeader = null;
     $("#btn-login").click(function(){
         $.post(
             "/access_token",
             $("#form-login").serialize(),
             null
-            ).success(function (data, textStatus, request) {
-                // Si es correcto => mostrar productos
-                authHeader = request.getResponseHeader('Authorization');
-                $.ajax({
-                    type: "GET",
-                    url: '/api/v1/products',
-                    headers: {"Authorization": authHeader},
-                    dataType: 'json',
-                    success: function (data) {
-                        $('#resultado').html(JSON.stringify(data));
-                    }
-                })
-            }).fail(function () {
-                alert("Incorrecto :(")
-            });
+        ).success(function (data, textStatus, request) {
+            // Si es correcto => mostrar pagina
+            authHeader = request.getResponseHeader('Authorization');
+            guardarToken(authHeader);
+            guardarUsername($("#username").val());
+            guardarRol();
+            let rol = sessionStorage.getItem('rol');
+            console.log(rol);
+            debugger;
+            if(rol == "writer"){
+                window.location.replace("./SHOWED_INDEX.html");
+            }else{
+                window.location.replace("./OPENED_INDEX.html");
+            }
+
+        }).fail(function () {
+            alert("Incorrecto :(")
+        });
     });
 </script>
 </body>
