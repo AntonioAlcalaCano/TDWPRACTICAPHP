@@ -19,6 +19,7 @@ use Slim\Routing\RouteContext;
 use TDW\ACiencia\Entity\Role;
 use TDW\ACiencia\Entity\User;
 use TDW\ACiencia\Utility\Error;
+use DateTime;
 
 /**
  * Class UserController
@@ -188,11 +189,22 @@ class UserController
         }
 
         // 201
+
+        $birthDate = (DateTime::createFromFormat('!Y-m-d', $req_data['birthDate']));
+        if(!$birthDate){
+            $birthDate=null;
+        }
+
         $user = new User(
             $req_data['username'],
             $req_data['email'],
             $req_data['password'],
-            $req_data['role'] ?? Role::ROLE_READER
+            $req_data['role'] ?? Role::ROLE_READER,
+            $req_data['authorized'],
+            $req_data['active'],
+            $req_data['name'],
+            $req_data['surname'],
+            $birthDate
         );
         $this->entityManager->persist($user);
         $this->entityManager->flush($user);
@@ -264,13 +276,41 @@ class UserController
             }
         }
 
+        // authorized
+        if (isset($req_data['authorized'])) {
+            $user->setAuthorized($req_data['authorized']);
+        }
+
+        // active
+        if (isset($req_data['active'])) {
+            $user->setActive($req_data['active']);
+        }
+
+        // name
+        if (isset($req_data['name'])) {
+            $user->setName($req_data['name']);
+        }
+
+        // surname
+        if (isset($req_data['surname'])) {
+            $user->setSurname($req_data['surname']);
+        }
+
+        // birthDate
+        if (isset($req_data['birthDate'])) {
+            $birthDate = (DateTime::createFromFormat('!Y-m-d', $req_data['birthDate']));
+            if(!$birthDate){
+                $birthDate=null;
+            }
+            $user->setBirthDate($birthDate);
+        }
+
         $this->entityManager->flush($user);
 
         return $response
             ->withStatus(209, 'Content Returned')
             ->withJson($user);
     }
-
     /**
      * Determines if a value exists for an attribute
      *

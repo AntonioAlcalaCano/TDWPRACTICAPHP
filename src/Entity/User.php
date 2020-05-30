@@ -10,7 +10,7 @@ namespace TDW\ACiencia\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use OutOfRangeException;
-
+use DateTime;
 /**
  * @ORM\Entity()
  * @ORM\Table(
@@ -79,24 +79,88 @@ class User implements JsonSerializable
     private Role $role;
 
     /**
+     * @ORM\Column(
+     *     name="authorized",
+     *     type="boolean",
+     *     nullable=false,
+     *     options = { "default" = false }
+     *     )
+     */
+    private bool $authorized;
+
+    /**
+     * @ORM\Column(
+     *     name="active",
+     *     type="boolean",
+     *     nullable=false,
+     *     options = { "default" = true }
+     *     )
+     */
+    private bool $active;
+
+    /**
+     * @ORM\Column(
+     *     name="name",
+     *     type="string",
+     *     length   = 60,
+     *     nullable=true
+     *     )
+     */
+    private ?string $name;
+
+    /**
+     * @ORM\Column(
+     *     name="surname",
+     *     type="string",
+     *     length   = 60,
+     *     nullable=true
+     *     )
+     */
+    private ?string $surname;
+
+    /**
+     * @ORM\Column(
+     *     name="birthdate",
+     *     type="datetime",
+     *     nullable=true
+     *     )
+     */
+    protected ?DateTime $birthDate = null;
+
+    /**
      * User constructor.
      *
      * @param string $username username
      * @param string $email email
      * @param string $password password
      * @param string $role Role::ROLE_READER | Role::ROLE_WRITER
+     * @param bool $authorized authorized
+     * @param bool $active active
+     * @param string|null $name name
+     * @param string|null $surname surname
+     * @param DateTime|null $birthDate birthDate
      */
     public function __construct(
         string $username = '',
         string $email = '',
         string $password = '',
-        string $role = Role::ROLE_READER
+        string $role = Role::ROLE_READER,
+        bool $authorized = false,
+        bool $active = true,
+        ?string $name = null,
+        ?string $surname = null,
+        ?DateTime $birthDate = null
     ) {
         $this->id       = 0;
         $this->username = $username;
         $this->email    = $email;
         $this->setPassword($password);
         $this->role     = new Role($role);
+        $this->authorized = $authorized;
+        $this->active = $active;
+        $this->name = $name;
+        $this->surname = $surname;
+        $this->birthDate = $birthDate;
     }
 
     /**
@@ -210,6 +274,96 @@ class User implements JsonSerializable
     }
 
     /**
+     * @return bool
+     */
+    public function isAuthorized(): bool
+    {
+        return $this->authorized;
+    }
+
+    /**
+     * @param bool $authorized authorized
+     * @return User
+     */
+    public function setAuthorized(bool $authorized): self
+    {
+        $this->authorized = $authorized;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param bool $active active
+     * @return User
+     */
+    public function setActive(bool $active): self
+    {
+        $this->active = $active;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string|null $name name
+     * @return User
+     */
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSurname(): ?string
+    {
+        return $this->surname;
+    }
+
+    /**
+     * @param string|null $surname surname
+     * @return User
+     */
+    public function setSurname(?string $surname): self
+    {
+        $this->surname = $surname;
+        return $this;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getBirthDate(): ?DateTime
+    {
+        return $this->birthDate;
+    }
+
+    /**
+     * @param DateTime|null $birthDate birthDate
+     * @return User
+     */
+    public function setBirthDate(?DateTime $birthDate): self
+    {
+        $this->birthDate = $birthDate;
+        return $this;
+    }
+
+    /**
      * The __toString method allows a class to decide how it will react when it is converted to a string.
      *
      * @return string
@@ -217,11 +371,19 @@ class User implements JsonSerializable
      */
     public function __toString(): string
     {
+        $birthDate = (null !== $this->getBirthDate())
+            ? $this->getBirthDate()->format('"Y-m-d"')
+            : '"null"';
         return '[' . basename(get_class($this)) . ' ' .
             '(id=' . $this->getId() . ', ' .
             'username="' . $this->getUsername() . '", ' .
             'email="' . $this->getEmail() . '", ' .
-            'role="' . $this->role .
+            'role="' . $this->role . '", ' .
+            'authorized="' . $this->isAuthorized() . '", ' .
+            'active="' . $this->isActive() . '", ' .
+            'name="' . $this->getName() . '", ' .
+            'surname="' . $this->getSurname() . '", ' .
+            'birthDate=' . $birthDate .
             '")]';
     }
 
@@ -239,7 +401,12 @@ class User implements JsonSerializable
                 'id' => $this->getId(),
                 'username' => $this->getUsername(),
                 'email' => $this->getEmail(),
-                'role' => $this->role->__toString()
+                'role' => $this->role->__toString(),
+                'authorized' => $this->isAuthorized(),
+                'active' => $this->isActive(),
+                'name' => $this->getName() ?? null,
+                'surname' => $this->getSurname() ?? null,
+                'birthDate' => ($this->getBirthDate()) ? $this->getBirthDate()->format('Y-m-d') : null,
             ]
         ];
     }

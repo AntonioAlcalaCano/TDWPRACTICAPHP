@@ -1182,6 +1182,23 @@ components:
           type: string
           default: reader
           enum: ['reader', 'writer']
+        authorized:
+          description: 'User authorized by a writer'
+          type: bool
+        active:
+          description: 'Status'
+          type: bool
+        name:
+          description: 'user real name'
+          type: string
+        surname:
+          description: 'user surname'
+          type: string
+          birthDate: {
+            description: 'user birth date',
+            type: string,
+            format: date
+          }
         _links:
           description: link relations
           type: object
@@ -1197,6 +1214,11 @@ components:
           id: 1508
           email: 'miw@upm.es'
           role: 'reader'
+          authorized: false
+          active: true
+          name: 'Antonio'
+          surname: 'Alcala Cano'
+          birthDate: '2020-05-30'
           _links:
             parent:
               href: /api/v1/users
@@ -1322,7 +1344,7 @@ components:
             response-406:
               $ref: '#/components/examples/response-406'
     Response_422:
-      description: "`UNPROCESSABLE ENTITY`: Username, e-mail or password is left out"
+      description: "`UNPROCESSABLE ENTITY`: Username, e-mail, password, authorized or active is left out"
       content:
         application/json:
           schema:
@@ -1356,11 +1378,33 @@ components:
                 type: string
                 default: reader
                 enum: ['reader', 'writer']
+              authorized:
+                description: 'User authorized by a writer'
+                type: bool
+              active:
+                description: 'Status'
+                type: bool
+              name:
+                description: 'user real name'
+                type: string
+              surname:
+                description: 'user surname'
+                type: string
+                birthDate: {
+                  description: 'user birth date',
+                  type: string,
+                  format: date
+                }
             example:
               username: username
               email: User_email@example.com
               password: User_password
               role: reader
+              authorized: false
+              active: true
+              name: "Antonio"
+              surname: "Alcala Cano"
+              birthDate: "2020-05-30"
     LoginRequestBody:
       description: Registered **username** and **password**
       required: true
@@ -1494,7 +1538,7 @@ components:
     response-422:
       value:
         code: 422
-        message: 'UNPROCESSABLE ENTITY: name, e-mail or password is left out'
+        message: 'UNPROCESSABLE ENTITY: name, e-mail, password, authorized or active is left out'
 
   securitySchemes:
     MiWApiSecurity:

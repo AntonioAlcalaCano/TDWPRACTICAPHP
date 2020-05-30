@@ -1,6 +1,8 @@
-function load() {
-    getProducts();
+function logout(){
+    sessionStorage.setItem('token', null);
+    sessionStorage.setItem('userName', null);
 }
+
 function readIndex(){
     sessionStorage.setItem('targetGuardado', null);
     listaProductos();
@@ -9,38 +11,52 @@ function readIndex(){
     cargarBarra();
 }
 function cargarBarra() {
-    var name = sessionStorage.getItem('userName');
+    let rol = sessionStorage.getItem('rol');
+    let name = sessionStorage.getItem('userName');
+    if(rol == "writer"){
+        let nav = document.getElementById("writerNav");
+        let p = document.createElement("p");
+        let text = document.createTextNode("Usuario "+name);
+        p.appendChild(text);
+        nav.appendChild(p);
+        p.style.color = "#ffffff";
+        p.setAttribute("id", "infoUser");
 
-    var div = document.getElementById("headerNav");
-    var ul = document.createElement("ul");
-    ul.setAttribute("class", "nav");
-    div.appendChild(ul);
 
-    var li = document.createElement("li");
-    var text = document.createTextNode("Logout");
-    var a = document.createElement("a");
-    li.appendChild(a);
-    a.appendChild(text);
-    a.setAttribute("href","index.html");
-    ul.appendChild(li);
+        let input=document.createElement("input");
+        nav.appendChild(input);
+        input.setAttribute("type","button");
+        input.setAttribute("value","Logout");
+        input.setAttribute("onclick","location.href='index.html'; logout();");
 
-    li = document.createElement("li");
-    text = document.createTextNode("Bienvenido "+name);
-    var a = document.createElement("a");
-    li.appendChild(a);
-    a.appendChild(text);
-    a.setAttribute("href","");
-    ul.appendChild(li);
+        input=document.createElement("input");
+        nav.appendChild(input);
+        input.setAttribute("type","button");
+        input.setAttribute("value","Perfil");
+        input.setAttribute("onclick","location.href='PERFIL.html';");
+    }
+    else{
+        let nav = document.getElementById("writerNav");
+        let p = document.createElement("p");
+        let text = document.createTextNode("Usuario "+name);
+        p.appendChild(text);
+        nav.appendChild(p);
+        p.style.color = "#ffffff";
+        p.setAttribute("id", "infoUser");
 
-    var ul2 = document.createElement("ul");
-    li.appendChild(ul2);
-    var li2 = document.createElement("li");
-    text = document.createTextNode("Ver Perfil");
-    var a = document.createElement("a");
-    li2.appendChild(a);
-    a.appendChild(text);
-    a.setAttribute("href","PERFIL.html");
-    ul2.appendChild(li2);
+
+        let input=document.createElement("input");
+        nav.appendChild(input);
+        input.setAttribute("type","button");
+        input.setAttribute("value","Logout");
+        input.setAttribute("onclick","location.href='index.html'; logout();");
+
+        input=document.createElement("input");
+        nav.appendChild(input);
+        input.setAttribute("type","button");
+        input.setAttribute("value","Perfil");
+        input.setAttribute("onclick","location.href='PERFIL.html';");
+    }
 }
 function guardarToken(event){
     sessionStorage.setItem('token', event);
@@ -68,15 +84,9 @@ function guardarTarget(event){
     sessionStorage.setItem('targetGuardado', target);
     //window.localStorage.setItem("targetGuardado", target);
 }
-function logout(){
-    sessionStorage.setItem('token', null);
-    sessionStorage.setItem('userName', null);
-}
 function listaProductos(){
 
     let rol = sessionStorage.getItem('rol');
-    console.log(rol);
-    debugger;
 
     let token = sessionStorage.getItem('token');
     $.ajax({
@@ -148,6 +158,7 @@ function listaProductos(){
 function listaAutores(){
 
     let target = sessionStorage.getItem('token');
+    let rol = sessionStorage.getItem('rol');
     $.ajax({
         type: "GET",
         url: '/api/v1/persons',
@@ -193,6 +204,21 @@ function listaAutores(){
                 a.appendChild(text);
                 a.setAttribute("href", "MOSTRAR_AUTOR.html");
                 a.setAttribute("onclick", "guardarTarget(event)");
+
+                if(rol == "writer"){
+                    var input=document.createElement("input");
+                    tr.appendChild(input);
+                    input.setAttribute("type","button");
+                    input.setAttribute("value","Eliminar Autor");
+                    input.setAttribute("onclick","deletePerson(event)");
+                }
+            }
+            if(rol == "writer"){
+                var input=document.createElement("input");
+                tbody.appendChild(input);
+                input.setAttribute("type","button");
+                input.setAttribute("value","Añadir Autor");
+                input.setAttribute("onclick","location.href='CREAR_AUTOR.html'");
             }
         }
     });
@@ -200,6 +226,7 @@ function listaAutores(){
 function listaEntidades(){
 
     let target = sessionStorage.getItem('token');
+    let rol = sessionStorage.getItem('rol');
     $.ajax({
         type: "GET",
         url: '/api/v1/entities',
@@ -244,24 +271,21 @@ function listaEntidades(){
                 a.appendChild(text);
                 a.setAttribute("href", "MOSTRAR_ENTIDAD.html");
                 a.setAttribute("onclick", "guardarTarget(event)");
+                if(rol == "writer"){
+                    var input=document.createElement("input");
+                    tr.appendChild(input);
+                    input.setAttribute("type","button");
+                    input.setAttribute("value","Eliminar Entidad");
+                    input.setAttribute("onclick","deleteEntity(event)");
+                }
             }
-        }
-    });
-}
-function getProducts(){
-    let target = sessionStorage.getItem('token');
-    let aux = null;
-    $.ajax({
-        type: "GET",
-        url: '/api/v1/products',
-        headers: {"Authorization": target},
-        dataType: 'json',
-        success: function (data) {
-            aux = data;
-            console.log(data);
-            console.log(data.products[0].product.name);
-            console.log(data.products.length);
-            $('#resultado').html(JSON.stringify(data));
+            if(rol == "writer"){
+                var input=document.createElement("input");
+                tbody.appendChild(input);
+                input.setAttribute("type","button");
+                input.setAttribute("value","Añadir Entidad");
+                input.setAttribute("onclick","location.href='CREAR_ENTIDAD.html'");
+            }
         }
     });
 }
@@ -269,6 +293,8 @@ function readPerson(){
 
     let target = sessionStorage.getItem('targetGuardado');
     let token = sessionStorage.getItem('token');
+    let rol = sessionStorage.getItem('rol');
+
     console.log(token);
     console.log(target);
     let index = null;
@@ -285,6 +311,22 @@ function readPerson(){
             }
             console.log(target);
             console.log(index);
+
+            var nav = document.getElementById("navPerson");
+
+            var input=document.createElement("input");
+            nav.appendChild(input);
+            input.setAttribute("type","button");
+            input.setAttribute("value","Indice");
+            input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
+
+            if(rol == "writer"){
+                var input=document.createElement("input");
+                nav.appendChild(input);
+                input.setAttribute("type","button");
+                input.setAttribute("value","Editar");
+                input.setAttribute("onclick","location.href='CREAR_AUTOR.html';");
+            }
 
             var section = document.getElementById("personInfo");
 
@@ -382,6 +424,8 @@ function readEntity(){
 
     let target = sessionStorage.getItem('targetGuardado');
     let token = sessionStorage.getItem('token');
+    let rol = sessionStorage.getItem('rol');
+
     console.log(token);
     console.log(target);
     let index = null;
@@ -396,8 +440,22 @@ function readEntity(){
                 if (data.entities[i].entity.name == target)
                     index = i;
             }
-            console.log(target);
-            console.log(index);
+
+            var nav = document.getElementById("navEntity");
+
+            var input=document.createElement("input");
+            nav.appendChild(input);
+            input.setAttribute("type","button");
+            input.setAttribute("value","Indice");
+            input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
+
+            if(rol == "writer"){
+                var input=document.createElement("input");
+                nav.appendChild(input);
+                input.setAttribute("type","button");
+                input.setAttribute("value","Editar");
+                input.setAttribute("onclick","location.href='CREAR_ENTIDAD.html';");
+            }
 
             var section = document.getElementById("entityInfo");
 
@@ -520,7 +578,7 @@ function readProduct(){
             nav.appendChild(input);
             input.setAttribute("type","button");
             input.setAttribute("value","Indice");
-            input.setAttribute("onclick","location.href='OPENED_INDEX.html';");
+            input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
 
             if(rol == "writer"){
                 var input=document.createElement("input");
@@ -528,6 +586,12 @@ function readProduct(){
                 input.setAttribute("type","button");
                 input.setAttribute("value","Editar");
                 input.setAttribute("onclick","location.href='CREAR_PRODUCTO.html';");
+
+                var input=document.createElement("input");
+                nav.appendChild(input);
+                input.setAttribute("type","button");
+                input.setAttribute("value","Añadir Relación");
+                input.setAttribute("onclick","location.href='CREAR_RELACION.html';");
             }
 
             var section = document.getElementById("productInfo");
@@ -707,7 +771,7 @@ function editProduct(){
     nav.appendChild(input);
     input.setAttribute("type","button");
     input.setAttribute("value","Indice");
-    input.setAttribute("onclick","location.href='OPENED_INDEX.html';");
+    input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
 
     $.ajax({
         type: "GET",
@@ -760,4 +824,425 @@ function deleteProduct(event){
     });
 
     productos.removeChild(event.target.parentElement);
+}
+function createPerson(){
+    let target = sessionStorage.getItem('targetGuardado');
+    let token = sessionStorage.getItem('token');
+
+    var nombreAutor = document.getElementById("nombre").value;
+    var nacimientoAutor = document.getElementById("nacimiento").value;
+    var muerteAutor = document.getElementById("muerte").value;
+    var retratoAutor = document.getElementById("retrato").value;
+    var wikiAutor = document.getElementById("wiki").value;
+
+    if(target == "null"){
+        $.ajax({
+            type: "POST",
+            url: '/api/v1/persons',
+            headers: {"Authorization": token},
+            dataType: 'json',
+            data: {
+                "name" :nombreAutor,
+                "birthDate" :nacimientoAutor,
+                "deathDate" :muerteAutor,
+                "imageUrl" :retratoAutor,
+                "wikiUrl" :wikiAutor
+            },
+            success: function (data){
+                alert("Realizado correctamente");
+            }
+        });
+    } else{
+        $.ajax({
+            type: "GET",
+            url: '/api/v1/persons',
+            headers: {"Authorization": token},
+            dataType: 'json',
+            success: function (data) {
+
+                var index = data.persons.map(function(x){return x.person.name}).indexOf(target);
+                var id = data.persons[index].person.id;
+                $.ajax({
+                    type: "PUT",
+                    url: '/api/v1/persons/'+id,
+                    headers: {"Authorization": token},
+                    dataType: 'json',
+                    data: {
+                        "name" :nombreAutor,
+                        "birthDate" :nacimientoAutor,
+                        "deathDate" :muerteAutor,
+                        "imageUrl" :retratoAutor,
+                        "wikiUrl" :wikiAutor,
+                    },
+                    success: function (data) {
+                        alert("Realizado correctamente");
+                    }
+                });
+            }
+        });
+    }
+
+}
+function editPerson(){
+    let target = sessionStorage.getItem('targetGuardado');
+    let token = sessionStorage.getItem('token');
+    console.log(target);
+    if(target != "null"){
+        var boton = document.getElementById("botonCreacion");
+        boton.setAttribute("value","Actualizar Datos");
+    }
+
+    var nav = document.getElementById("navPerson");
+
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Indice");
+    input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
+
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/persons',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+            var index = data.persons.map(function(x){return x.person.name}).indexOf(target);
+
+            console.log(data.persons[index].person);
+
+            document.getElementById("nombre").value = data.persons[index].person.name;
+            document.getElementById("nacimiento").value = data.persons[index].person.birthDate;
+            document.getElementById("muerte").value = data.persons[index].person.deathDate;
+            document.getElementById("retrato").value = data.persons[index].person.imageUrl;
+            document.getElementById("wiki").value = data.persons[index].person.wikiUrl;
+        }
+    });
+}
+
+function deletePerson(event){
+
+    let token = sessionStorage.getItem('token');
+    var autores = document.getElementById("cuerpoAutores");
+
+    var autorTarget = event.target.parentElement.firstChild.nextSibling.innerHTML;
+
+    console.log(autorTarget);
+
+    var texto = autorTarget.replace(/<[^>]*>?/g, '');
+
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/persons',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+
+            var index = data.persons.map(function(x){return x.person.name}).indexOf(texto);
+            var id = data.persons[index].person.id;
+            $.ajax({
+                type: "DELETE",
+                url: '/api/v1/persons/'+id,
+                headers: {"Authorization": token},
+                dataType: 'json',
+                success: function (data) {
+                    alert("Realizado correctamente");
+                }
+            });
+        }
+    });
+
+    autores.removeChild(event.target.parentElement);
+}
+function createEntity(){
+    let target = sessionStorage.getItem('targetGuardado');
+    let token = sessionStorage.getItem('token');
+
+    var nombreEntidad = document.getElementById("nombre").value;
+    var creacionEntidad = document.getElementById("creacion").value;
+    var muerteEntidad = document.getElementById("muerte").value;
+    var logoEntidad = document.getElementById("logo").value;
+    var wikiEntidad = document.getElementById("wiki").value;
+    if(target == "null"){
+        $.ajax({
+            type: "POST",
+            url: '/api/v1/entities',
+            headers: {"Authorization": token},
+            dataType: 'json',
+            data: {
+                "name" :nombreEntidad,
+                "birthDate" :creacionEntidad,
+                "deathDate" :muerteEntidad,
+                "imageUrl" :logoEntidad,
+                "wikiUrl" :wikiEntidad
+            },
+            success: function (data){
+                alert("Realizado correctamente");
+            }
+        });
+    } else{
+        $.ajax({
+            type: "GET",
+            url: '/api/v1/entities',
+            headers: {"Authorization": token},
+            dataType: 'json',
+            success: function (data) {
+
+                var index = data.entities.map(function(x){return x.entity.name}).indexOf(target);
+                var id = data.entities[index].entity.id;
+                $.ajax({
+                    type: "PUT",
+                    url: '/api/v1/entities/'+id,
+                    headers: {"Authorization": token},
+                    dataType: 'json',
+                    data: {
+                        "name" :nombreEntidad,
+                        "birthDate" :creacionEntidad,
+                        "deathDate" :muerteEntidad,
+                        "imageUrl" :logoEntidad,
+                        "wikiUrl" :wikiEntidad
+                    },
+                    success: function (data) {
+                        alert("Realizado correctamente");
+                    }
+                });
+            }
+        });
+    }
+
+}
+function editEntity(){
+    let target = sessionStorage.getItem('targetGuardado');
+    let token = sessionStorage.getItem('token');
+    console.log(target);
+    if(target != "null"){
+        var boton = document.getElementById("botonCreacion");
+        boton.setAttribute("value","Actualizar Datos");
+    }
+
+    var nav = document.getElementById("navEntity");
+
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Indice");
+    input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
+
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/entities',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+            var index = data.entities.map(function(x){return x.entity.name}).indexOf(target);
+
+            document.getElementById("nombre").value = data.entities[index].entity.name;
+            document.getElementById("creacion").value = data.entities[index].entity.birthDate;
+            document.getElementById("muerte").value = data.entities[index].entity.deathDate;
+            document.getElementById("logo").value = data.entities[index].entity.imageUrl;
+            document.getElementById("wiki").value = data.entities[index].entity.wikiUrl;
+        }
+    });
+}
+
+function deleteEntity(event){
+
+    let token = sessionStorage.getItem('token');
+    var entidades = document.getElementById("cuerpoEntidades");
+
+    var entidadTarget = event.target.parentElement.firstChild.nextSibling.innerHTML;
+
+
+    var texto = entidadTarget.replace(/<[^>]*>?/g, '');
+    console.log(texto);
+
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/entities',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+
+            var index = data.entities.map(function(x){return x.entity.name}).indexOf(texto);
+            var id = data.entities[index].entity.id;
+            $.ajax({
+                type: "DELETE",
+                url: '/api/v1/entities/'+id,
+                headers: {"Authorization": token},
+                dataType: 'json',
+                success: function (data) {
+                    alert("Realizado correctamente");
+                }
+            });
+        }
+    });
+
+    entidades.removeChild(event.target.parentElement);
+}
+function loadProfile() {
+    let name = sessionStorage.getItem('userName');
+    let token = sessionStorage.getItem('token');
+
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/users',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+            var index = data.users.map(function(x){return x.user.username}).indexOf(name);
+            var username = data.users[index].user.username;
+            var email = data.users[index].user.email;
+            var rol = data.users[index].user.role;
+
+            var nav = document.getElementById("navProfile");
+
+            var input=document.createElement("input");
+            nav.appendChild(input);
+            input.setAttribute("type","button");
+            input.setAttribute("value","Indice");
+            input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
+
+            var input=document.createElement("input");
+            nav.appendChild(input);
+            input.setAttribute("type","button");
+            input.setAttribute("value","Editar");
+            input.setAttribute("onclick","location.href='EDITAR_PERFIL.html';");
+
+            var section = document.getElementById("profileInfo");
+
+            var titulo = document.createElement("h1");
+            var text = document.createTextNode("Información Personal");
+            titulo.appendChild(text);
+            section.appendChild(titulo);
+
+            var hr = document.createElement("hr");
+            section.appendChild(hr);
+
+            var p = document.createElement("p");
+            section.appendChild(p);
+
+            var br = document.createElement("br");
+            section.appendChild(br);
+
+            var text = document.createTextNode("Nombre: ");
+            p.appendChild(text);
+            var text = document.createTextNode(username);
+            p.appendChild(text);
+
+            var br = document.createElement("br");
+            p.appendChild(br);
+
+            var text = document.createTextNode("Email: ");
+            p.appendChild(text);
+            var text = document.createTextNode(email);
+            p.appendChild(text);
+
+            var br = document.createElement("br");
+            p.appendChild(br);
+        }
+    });
+}
+function createRelation(){
+    let target = sessionStorage.getItem('targetGuardado');
+    let token = sessionStorage.getItem('token');
+
+    var nombreAutor = document.getElementById("autor");
+    var nombreEntidad = document.getElementById("entidad");
+    console.log(nombreAutor);
+    console.log(nombreEntidad);
+    debugger;
+
+    var autor = nombreAutor.options[nombreAutor.selectedIndex].text;
+    var entidad = nombreEntidad.options[nombreEntidad.selectedIndex].text;
+    console.log(autor);
+    console.log(entidad);
+    debugger;
+    var idAutor = getidAutor(autor);
+    var idProducto = idProduct(target);
+
+    console.log(token);
+    console.log(idProducto);
+    console.log(idAutor);
+    debugger;
+    $.ajax({
+        type: "PUT",
+        url: '/api/v1/products/' + idProducto + '/persons/add/'+ idAutor,
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+            alert("Relacción añadida correactamente");
+        }
+    });
+}
+function getidAutor(nombre) {
+    var token = sessionStorage.getItem('token');
+    var idAutor = null;
+
+    console.log("valor nombre");
+    console.log(nombre);
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/persons',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+            for(let i = 0; i < data.persons.length; i++){
+                if(nombre == data.persons[i].person.name){
+                    idAutor = data.persons[i].person.id;
+                }
+            }
+        }
+    });
+    return idAutor;
+}
+function idProduct(nombre) {
+    let token = sessionStorage.getItem('token');
+    var idProduct;
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/products',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+
+            var index = data.products.map(function (x) {return x.product.name}).indexOf(nombre);
+            idProduct = data.products[index].product.id;
+
+        }
+    });
+    return idProduct;
+}
+function loadRelations() {
+    let token = sessionStorage.getItem('token');
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/persons',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+            let listaAutores = document.getElementById("listaAutores");
+            for(let i = 0; i < data.persons.length; i++){
+                var autor = document.createElement("option");
+                autor.setAttribute("value", i);
+                var text = document.createTextNode(data.persons[i].person.name);
+                autor.appendChild(text);
+                listaAutores.appendChild(autor);
+            }
+        }
+    });
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/entities',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+            let listaEntidades = document.getElementById("listaEntidades");
+            for(let i = 0; i < data.entities.length; i++){
+                var entidad = document.createElement("option");
+                entidad.setAttribute("value", i);
+                var text = document.createTextNode(data.entities[i].entity.name);
+                entidad.appendChild(text);
+                listaEntidades.appendChild(entidad);
+            }
+        }
+    });
 }

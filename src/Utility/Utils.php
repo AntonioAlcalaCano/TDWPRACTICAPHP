@@ -137,6 +137,8 @@ trait Utils
      * @param string $email user email
      * @param string $password user password
      * @param bool $isWriter isAdmin
+     * @param bool $isAuthorized isAuthorized
+     * @param bool $isActive isActive
      *
      * @return int user_id
      */
@@ -144,13 +146,17 @@ trait Utils
         string $username,
         string $email,
         string $password,
-        bool $isWriter = false
+        bool $isWriter = false,
+        bool $isAuthorized = false,
+        bool $isActive = true
     ): int {
         $user = new User(
             $username,
             $email,
             $password,
-            ($isWriter) ? Role::ROLE_WRITER : Role::ROLE_READER
+            ($isWriter) ? Role::ROLE_WRITER : Role::ROLE_READER,
+            $isAuthorized,
+            $isActive
         );
         try {
             $e_manager = self::getEntityManager();
