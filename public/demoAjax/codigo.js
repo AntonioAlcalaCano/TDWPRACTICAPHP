@@ -1,6 +1,7 @@
 function logout(){
     sessionStorage.setItem('token', null);
     sessionStorage.setItem('userName', null);
+    sessionStorage.setItem('passwd', null);
 }
 
 function readIndex(){
@@ -34,6 +35,24 @@ function cargarBarra() {
         input.setAttribute("type","button");
         input.setAttribute("value","Perfil");
         input.setAttribute("onclick","location.href='PERFIL.html';");
+
+        input=document.createElement("input");
+        nav.appendChild(input);
+        input.setAttribute("type","button");
+        input.setAttribute("value","Añadir Producto");
+        input.setAttribute("onclick","location.href='CREAR_PRODUCTO.html'");
+
+        input=document.createElement("input");
+        nav.appendChild(input);
+        input.setAttribute("type","button");
+        input.setAttribute("value","Añadir Entidad");
+        input.setAttribute("onclick","location.href='CREAR_ENTIDAD.html'");
+
+        input=document.createElement("input");
+        nav.appendChild(input);
+        input.setAttribute("type","button");
+        input.setAttribute("value","Añadir Autor");
+        input.setAttribute("onclick","location.href='CREAR_AUTOR.html'");
     }
     else{
         let nav = document.getElementById("writerNav");
@@ -145,13 +164,6 @@ function listaProductos(){
                     input.setAttribute("onclick","deleteProduct(event)");
                 }
             }
-            if(rol == "writer"){
-                var input=document.createElement("input");
-                tbody.appendChild(input);
-                input.setAttribute("type","button");
-                input.setAttribute("value","Añadir Producto");
-                input.setAttribute("onclick","location.href='CREAR_PRODUCTO.html'");
-            }
         }
     });
 }
@@ -176,6 +188,7 @@ function listaAutores(){
             tbody.setAttribute("id", "cuerpoAutores");
 
             for (let i = 0; i < data.persons.length; i++) {
+
                 let tr = document.createElement("tr");
                 tbody.appendChild(tr);
 
@@ -213,13 +226,6 @@ function listaAutores(){
                     input.setAttribute("onclick","deletePerson(event)");
                 }
             }
-            if(rol == "writer"){
-                var input=document.createElement("input");
-                tbody.appendChild(input);
-                input.setAttribute("type","button");
-                input.setAttribute("value","Añadir Autor");
-                input.setAttribute("onclick","location.href='CREAR_AUTOR.html'");
-            }
         }
     });
 }
@@ -243,6 +249,7 @@ function listaEntidades(){
             tbody.setAttribute("id", "cuerpoEntidades");
 
             for (var i = 0; i < data.entities.length; i++) {
+
                 var tr = document.createElement("tr");
                 tbody.appendChild(tr);
 
@@ -278,13 +285,6 @@ function listaEntidades(){
                     input.setAttribute("value","Eliminar Entidad");
                     input.setAttribute("onclick","deleteEntity(event)");
                 }
-            }
-            if(rol == "writer"){
-                var input=document.createElement("input");
-                tbody.appendChild(input);
-                input.setAttribute("type","button");
-                input.setAttribute("value","Añadir Entidad");
-                input.setAttribute("onclick","location.href='CREAR_ENTIDAD.html'");
             }
         }
     });
@@ -1089,9 +1089,13 @@ function loadProfile() {
         dataType: 'json',
         success: function (data) {
             var index = data.users.map(function(x){return x.user.username}).indexOf(name);
+            console.log(index);
             var username = data.users[index].user.username;
             var email = data.users[index].user.email;
             var rol = data.users[index].user.role;
+            var nombre = data.users[index].user.name;
+            var apellidos = data.users[index].user.surname;
+            var fNacimiento =  data.users[index].user.birthDate;
 
             var nav = document.getElementById("navProfile");
 
@@ -1123,7 +1127,7 @@ function loadProfile() {
             var br = document.createElement("br");
             section.appendChild(br);
 
-            var text = document.createTextNode("Nombre: ");
+            var text = document.createTextNode("Nombre de usuario: ");
             p.appendChild(text);
             var text = document.createTextNode(username);
             p.appendChild(text);
@@ -1134,6 +1138,38 @@ function loadProfile() {
             var text = document.createTextNode("Email: ");
             p.appendChild(text);
             var text = document.createTextNode(email);
+            p.appendChild(text);
+
+            var br = document.createElement("br");
+            p.appendChild(br);
+
+            var text = document.createTextNode("Tipo de ROL: ");
+            p.appendChild(text);
+            var text = document.createTextNode(rol);
+            p.appendChild(text);
+
+            var br = document.createElement("br");
+            p.appendChild(br);
+
+            var text = document.createTextNode("Nombre: ");
+            p.appendChild(text);
+            var text = document.createTextNode(nombre);
+            p.appendChild(text);
+
+            var br = document.createElement("br");
+            p.appendChild(br);
+
+            var text = document.createTextNode("Apellidos: ");
+            p.appendChild(text);
+            var text = document.createTextNode(apellidos);
+            p.appendChild(text);
+
+            var br = document.createElement("br");
+            p.appendChild(br);
+
+            var text = document.createTextNode("Fecha de nacimiento: ");
+            p.appendChild(text);
+            var text = document.createTextNode(fNacimiento);
             p.appendChild(text);
 
             var br = document.createElement("br");
@@ -1245,4 +1281,140 @@ function loadRelations() {
             }
         }
     });
+}
+function editProfile(){
+    let token = sessionStorage.getItem('token');
+    let name = sessionStorage.getItem('userName');
+
+    var boton = document.getElementById("botonCreacion");
+    boton.setAttribute("value","Actualizar Perfil");
+
+    var nav = document.getElementById("navPerfil");
+
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Indice");
+    input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
+
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/users',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+            var index = data.users.map(function(x){return x.user.username}).indexOf(name);
+            console.log(data.users[index].user);
+            document.getElementById("usern").value = data.users[index].user.username;
+            document.getElementById("nombre").value = data.users[index].user.name;
+            document.getElementById("apellidos").value = data.users[index].user.surname;
+            document.getElementById("cumpleaños").value = data.users[index].user.birthDate;
+            document.getElementById("correo").value = data.users[index].user.email;
+
+        }
+    });
+}
+function updateProfile(){
+    let token = sessionStorage.getItem('token');
+    let name = sessionStorage.getItem('userName');
+
+    var usern = document.getElementById("usern").value;
+    var nombre = document.getElementById("nombre").value;
+    var apellidos = document.getElementById("apellidos").value;
+    var cumpleaños = document.getElementById("cumpleaños").value;
+    var correo = document.getElementById("correo").value;
+    var contraseña = document.getElementById("contraseña").value;
+    console.log(usern);
+
+    console.log(contraseña);
+    debugger;
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/users',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+            var index = data.users.map(function(x){return x.user.username}).indexOf(name);
+            var id = data.users[index].user.id;
+
+            if((correo == data.users[index].user.email) && (usern == data.users[index].user.username) && (contraseña == '')){
+                usuario = {
+                    name: nombre,
+                    surname: apellidos,
+                    birthDate: cumpleaños
+                }
+            }else if ((correo == data.users[index].user.email) && (usern == data.users[index].user.username) && (contraseña != '')){
+                    usuario = {
+                        password: contraseña,
+                        name: nombre,
+                        surname: apellidos,
+                        birthDate: cumpleaños
+                    }
+            }else if ((correo == data.users[index].user.email) && (usern != data.users[index].user.username) && (contraseña == '')){
+                    sessionStorage.setItem('userName', usern);
+                    usuario = {
+                        username: usern,
+                        name: nombre,
+                        surname: apellidos,
+                        birthDate: cumpleaños
+                    }
+                }else if ((correo == data.users[index].user.email) && (usern != data.users[index].user.username) && (contraseña != '')){
+                    sessionStorage.setItem('userName', usern);
+                    usuario = {
+                        username: usern,
+                        password: contraseña,
+                        name: nombre,
+                        surname: apellidos,
+                        birthDate: cumpleaños
+                    }
+                }else if ((correo != data.users[index].user.email) && (usern == data.users[index].user.username) && (contraseña == '')){
+                    usuario = {
+                        email: correo,
+                        name: nombre,
+                        surname: apellidos,
+                        birthDate: cumpleaños
+                    }
+                }else if ((correo != data.users[index].user.email) && (usern == data.users[index].user.username) && (contraseña != '')){
+                    usuario = {
+                        email: correo,
+                        password: contraseña,
+                        name: nombre,
+                        surname: apellidos,
+                        birthDate: cumpleaños
+                    }
+                }
+                else if ((correo != data.users[index].user.email) && (usern != data.users[index].user.username) && (contraseña == '')){
+                    sessionStorage.setItem('userName', usern);
+                    usuario = {
+                        email: correo,
+                        username: usern,
+                        name: nombre,
+                        surname: apellidos,
+                        birthDate: cumpleaños
+                    }
+                }
+                else if ((correo != data.users[index].user.email) && (usern != data.users[index].user.username) && (contraseña != '')){
+                    sessionStorage.setItem('userName', usern);
+                    usuario = {
+                        email: correo,
+                        username: usern,
+                        password: contraseña,
+                        name: nombre,
+                        surname: apellidos,
+                        birthDate: cumpleaños
+                    }
+                }
+
+                $.ajax({
+                    type: "PUT",
+                    url: '/api/v1/users/'+id,
+                    headers: {"Authorization": token},
+                    dataType: 'json',
+                    data: usuario,
+                        success: function (data) {
+                            alert("Realizado correctamente");
+                        }
+                    });
+                }
+            });
 }

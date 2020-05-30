@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+    <title>TDW  PRACTICA  JAVASCRIPT</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="TDW  PRACTICA  JAVASCRIPT">
+    <meta name="keywords" content="TDW  PRACTICA  JAVASCRIPT">
+    <meta name="author" content="Antonio Alcalá Cano">
+    <script src="./codigo.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <link href="estilo.css" type="text/css" rel="stylesheet" media="">
+</head>
+
+<body onload="editProfile();">
+<header>
+    <b>Anales de la ciencia</b>
+</header>
+<nav id="navPerfil">
+</nav>
+<form action="./PERFIL.html" id="creacionFormulario">
+    <label>Nombre de usuario: </label>
+    <input type="text" id="usern">
+    <br><br>
+    <label>Nombre: </label>
+    <input type="text" id="nombre">
+    <br><br>
+    <label>Apellidos: </label>
+    <input type="text" id="apellidos">
+    <br><br>
+    <label>Fecha de nacimiento: </label>
+    <input type="date" id="cumpleaños">
+    <br><br>
+    <label>Correo electrónico: </label>
+    <input type="text" id="correo">
+    <br><br>
+    <label>Contraseña: </label>
+    <input type="password" id="contraseña">
+    <br><br><br>
+    <input type="submit" value="Actualizar perfil" onclick="updateProfile()" id= "botonCreacion">
+</form>
+
+</body>
+</html>
