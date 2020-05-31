@@ -11,21 +11,24 @@
     <link href="estilo.css" type="text/css" rel="stylesheet" media="">
 </head>
 
-<body>
+<body onload="loadUsersRegister();">
 <header>
     <b>Anales de la ciencia</b>
 </header>
-<nav id="navRegistro">
+<nav id="navUsuarios">
 </nav>
-<form id="creacionFormulario">
-    <label>Nombre de usuario: </label>
-    <input type="text" id="usern">
-    <br><br>
-    <label>Contraseña: </label>
-    <input type="password" id="contraseña">
-    <br><br><br>
-    <input type="submit" value="Validar datos" onclick="registerUser()" id= "botonCreacion">
-</form>
+<table id="tablaUsuarios" border="1"/>
+<thead>
+<tr>
+    <th>ID</th>
+    <th>Nombre de usuario</th>
+    <th>Email</th>
+    <th>Nombre</th>
+    <th>Apellidos</th>
+    <th>Fecha de nacimiento</th>
+    <th>Rol</th>
+</tr>
+</thead>
 
 </body>
 </html>

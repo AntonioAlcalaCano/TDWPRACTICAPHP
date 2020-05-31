@@ -1667,6 +1667,12 @@ function loadUsers() {
     input.setAttribute("value","Indice");
     input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
 
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Solicitudes de registro");
+    input.setAttribute("onclick","location.href='SOLICITUDES_REGISTRO.html';");
+
     var tablaUsers = document.getElementById("tablaUsuarios");
 
     $.ajax({
@@ -1676,7 +1682,7 @@ function loadUsers() {
         dataType: 'json',
         success: function (data) {
             for(var i = 0; i < data.users.length; i++){
-                if(data.users[i].user.username != nombreU){
+                if((data.users[i].user.username != nombreU) && (data.users[i].user.authorized == 1)){
                     var tbody = document.createElement("tbody");
                     tablaUsers.appendChild(tbody);
 
@@ -1778,6 +1784,152 @@ function activeUser(event){
         data: usuario,
         success: function (data) {
             alert("Realizado correctamente");
+        }
+    });
+}
+function registerUser() {
+
+    var usern = document.getElementById("usern").value;
+    var contraseña = document.getElementById("contraseña").value;
+    console.log(usern);
+    debugger;
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/users/username/'+usern,
+        dataType: 'json',
+        success: function (data) {
+            alert("Error al validar los datos, el nombre de usuario introducido ya existe");
+        },
+        error: function (data) {
+            sessionStorage.setItem('usuarioRegistro', usern);
+            sessionStorage.setItem('contraseñaRegistro', contraseña);
+            window.location.replace("./REGISTRO_COMPLETO.html");
+        }
+    });
+    debugger;
+}
+
+function validateRegister() {
+    var nombreU = sessionStorage.getItem('usuarioRegistro');
+    var contraseñaU = sessionStorage.getItem('contraseñaRegistro');
+    var nombre = document.getElementById("nombre").value;
+    var apellidos = document.getElementById("apellidos").value;
+    var correo = document.getElementById("correo").value;
+    var cumpleaños = document.getElementById("cumpleaños").value;
+
+    var usuario = {
+        username: nombreU,
+        password: contraseñaU,
+        email: correo,
+        name: nombre,
+        surname: apellidos,
+        birthDate: cumpleaños,
+        role: "reader",
+        authorized: 0,
+        active: 0
+    }
+    $.ajax({
+        type: "POST",
+        url: '/api/v1/users',
+        dataType: 'json',
+        data: usuario,
+        async: false,
+        success: function (data) {
+            window.location.replace("./index.html");
+            alert("Te has registrado correctamente");
+
+        }, error: function () {
+            alert("El correo introducido ya está en uso, porfavor introduce otro");
+        }
+    });
+    debugger;
+}
+function loadUsersRegister() {
+    let token = sessionStorage.getItem('token');
+    var nav = document.getElementById("navUsuarios");
+
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Indice");
+    input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
+
+    var tablaUsers = document.getElementById("tablaUsuarios");
+
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/users',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+            for(var i = 0; i < data.users.length; i++){
+                if(data.users[i].user.authorized == 0){
+                    var tbody = document.createElement("tbody");
+                    tablaUsers.appendChild(tbody);
+
+                    var tr = document.createElement("tr");
+                    tbody.appendChild(tr);
+                    var td = document.createElement("td");
+                    tr.appendChild(td);
+                    var text = document.createTextNode(data.users[i].user.id);
+                    td.appendChild(text);
+
+                    var td = document.createElement("td");
+                    tr.appendChild(td);
+                    text = document.createTextNode(data.users[i].user.username);
+                    td.appendChild(text);
+
+                    var td = document.createElement("td");
+                    tr.appendChild(td);
+                    text = document.createTextNode(data.users[i].user.email);
+                    td.appendChild(text);
+
+                    var td = document.createElement("td");
+                    tr.appendChild(td);
+                    text = document.createTextNode(data.users[i].user.firstname);
+                    td.appendChild(text);
+
+                    var td = document.createElement("td");
+                    tr.appendChild(td);
+                    text = document.createTextNode(data.users[i].user.lastname);
+                    td.appendChild(text);
+
+                    var td = document.createElement("td");
+                    tr.appendChild(td);
+                    text = document.createTextNode(data.users[i].user.birthDate);
+                    td.appendChild(text);
+
+                    var td = document.createElement("td");
+                    tr.appendChild(td);
+                    text = document.createTextNode(data.users[i].user.role);
+                    td.appendChild(text);
+
+                    var input=document.createElement("input");
+                    tr.appendChild(input);
+                    input.setAttribute("type","button");
+                    input.setAttribute("value","Validar Usuario");
+                    input.setAttribute("onclick","validateUser(event);location.href='SOLICITUDES_REGISTRO.html';");
+                }
+            }
+        }
+    });
+}
+function validateUser(event){
+    let token = sessionStorage.getItem('token');
+    var idTarget = event.target.parentElement.firstChild.innerHTML;
+
+    var usuario = {
+        active: 1,
+        authorized: 1
+    }
+    $.ajax({
+        type: "PUT",
+        url: '/api/v1/users/'+idTarget,
+        headers: {"Authorization": token},
+        dataType: 'json',
+        data: usuario,
+        success: function (data) {
+            alert("Usuario validado correctamente");
         }
     });
 }

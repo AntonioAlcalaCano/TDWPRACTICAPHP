@@ -15,16 +15,22 @@
 <header>
     <b>Anales de la ciencia</b>
 </header>
-<nav id="navRegistro">
+<nav id="navPerfil">
 </nav>
 <form id="creacionFormulario">
-    <label>Nombre de usuario: </label>
-    <input type="text" id="usern">
+    <label>Nombre: </label>
+    <input type="text" id="nombre">
     <br><br>
-    <label>Contraseña: </label>
-    <input type="password" id="contraseña">
-    <br><br><br>
-    <input type="submit" value="Validar datos" onclick="registerUser()" id= "botonCreacion">
+    <label>Apellidos: </label>
+    <input type="text" id="apellidos">
+    <br><br>
+    <label>Fecha de nacimiento: </label>
+    <input type="date" id="cumpleaños">
+    <br><br>
+    <label>Correo electrónico: </label>
+    <input type="text" id="correo">
+    <br><br>
+    <input type="submit" value="Validar registro" onclick="validateRegister()" id= "botonCreacion">
 </form>
 
 </body>
