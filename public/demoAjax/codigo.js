@@ -23,7 +23,6 @@ function cargarBarra() {
         p.appendChild(text);
         nav.appendChild(p);
         p.style.color = "#ffffff";
-        p.setAttribute("id", "infoUser");
 
 
         let input=document.createElement("input");
@@ -69,7 +68,6 @@ function cargarBarra() {
         p.appendChild(text);
         nav.appendChild(p);
         p.style.color = "#ffffff";
-        p.setAttribute("id", "infoUser");
 
 
         let input=document.createElement("input");
@@ -318,6 +316,7 @@ function readPerson(){
     let target = sessionStorage.getItem('targetGuardado');
     let token = sessionStorage.getItem('token');
     let rol = sessionStorage.getItem('rol');
+    var name = sessionStorage.getItem('userName');
 
     console.log(token);
     console.log(target);
@@ -338,6 +337,12 @@ function readPerson(){
 
             var nav = document.getElementById("navPerson");
 
+            var p = document.createElement("p");
+            var text = document.createTextNode("Usuario "+name);
+            p.appendChild(text);
+            nav.appendChild(p);
+            p.style.color = "#ffffff";
+
             var input=document.createElement("input");
             nav.appendChild(input);
             input.setAttribute("type","button");
@@ -350,6 +355,18 @@ function readPerson(){
                 input.setAttribute("type","button");
                 input.setAttribute("value","Editar");
                 input.setAttribute("onclick","location.href='CREAR_AUTOR.html';");
+
+                var input=document.createElement("input");
+                nav.appendChild(input);
+                input.setAttribute("type","button");
+                input.setAttribute("value","Añadir Relación");
+                input.setAttribute("onclick","location.href='CREAR_RELACION_AUTOR.html';");
+
+                var input=document.createElement("input");
+                nav.appendChild(input);
+                input.setAttribute("type","button");
+                input.setAttribute("value","Eliminar Relación");
+                input.setAttribute("onclick","location.href='ELIMINAR_RELACION_AUTOR.html';");
             }
 
             var section = document.getElementById("personInfo");
@@ -394,7 +411,7 @@ function readPerson(){
             var br = document.createElement("br");
             p.appendChild(br);
 
-            if (data.persons[index].person.deathDate != "1111-05-11") {
+            if (data.persons[index].person.deathDate != null) {
 
                 var text = document.createTextNode("Fecha De Muerte: ");
                 p.appendChild(text);
@@ -405,6 +422,59 @@ function readPerson(){
                 p.appendChild(br);
 
             }
+            var h1 = document.createElement("p");
+            p.appendChild(h1);
+            var text = document.createTextNode("Productos Participantes: ");
+            h1.appendChild(text);
+
+            var autorID = data.persons[index].person.id;
+            $.ajax({
+                type: "GET",
+                url: '/api/v1/persons/' + autorID + '/products',
+                headers: {"Authorization": token},
+                dataType: 'json',
+                success: function (data) {
+                    if(data.products.length == 0){
+                        var text = document.createTextNode("Ninguno");
+                        h1.appendChild(text);
+                    }
+                    for(var j = 0; j< data.products.length; j++){
+                        if(j==0){
+                            var text = document.createTextNode(data.products[index].product.name);
+                            h1.appendChild(text);
+                        }else{
+                            var text = document.createTextNode(', ' + data.products[index].product.name);
+                            h1.appendChild(text);
+                        }
+                    }
+                }
+            });
+            var h2 = document.createElement("p");
+            p.appendChild(h2);
+            var text = document.createTextNode("Entidades Participantes: ");
+            h2.appendChild(text);
+
+            $.ajax({
+                type: "GET",
+                url: '/api/v1/persons/' + autorID + '/entities',
+                headers: {"Authorization": token},
+                dataType: 'json',
+                success: function (data) {
+                    if(data.entities.length == 0){
+                        var text = document.createTextNode("Ninguna");
+                        h2.appendChild(text);
+                    }
+                    for(var j = 0; j< data.entities.length; j++){
+                        if(j==0){
+                            var text = document.createTextNode(data.entities[index].entity.name);
+                            h2.appendChild(text);
+                        }else{
+                            var text = document.createTextNode(', ' + data.entities[index].entity.name);
+                            h2.appendChild(text);
+                        }
+                    }
+                }
+            });
             /*
             var text = document.createTextNode("Productos en los que ha participado: ");
             p.appendChild(text);
@@ -449,6 +519,7 @@ function readEntity(){
     let target = sessionStorage.getItem('targetGuardado');
     let token = sessionStorage.getItem('token');
     let rol = sessionStorage.getItem('rol');
+    var name = sessionStorage.getItem('userName');
 
     console.log(token);
     console.log(target);
@@ -467,6 +538,13 @@ function readEntity(){
 
             var nav = document.getElementById("navEntity");
 
+            var p = document.createElement("p");
+            var text = document.createTextNode("Usuario "+name);
+            p.appendChild(text);
+            nav.appendChild(p);
+            p.style.color = "#ffffff";
+
+
             var input=document.createElement("input");
             nav.appendChild(input);
             input.setAttribute("type","button");
@@ -479,6 +557,18 @@ function readEntity(){
                 input.setAttribute("type","button");
                 input.setAttribute("value","Editar");
                 input.setAttribute("onclick","location.href='CREAR_ENTIDAD.html';");
+
+                var input=document.createElement("input");
+                nav.appendChild(input);
+                input.setAttribute("type","button");
+                input.setAttribute("value","Añadir Relación");
+                input.setAttribute("onclick","location.href='CREAR_RELACION_ENTIDAD.html';");
+
+                var input=document.createElement("input");
+                nav.appendChild(input);
+                input.setAttribute("type","button");
+                input.setAttribute("value","Eliminar Relación");
+                input.setAttribute("onclick","location.href='ELIMINAR_RELACION_ENTIDAD.html';");
             }
 
             var section = document.getElementById("entityInfo");
@@ -523,7 +613,7 @@ function readEntity(){
             var br = document.createElement("br");
             p.appendChild(br);
 
-            if(data.entities[index].entity.deathDate != ""){
+            if(data.entities[index].entity.deathDate != null){
 
                 var text = document.createTextNode("Fecha De Muerte: ");
                 p.appendChild(text);
@@ -534,6 +624,60 @@ function readEntity(){
                 p.appendChild(br);
 
             }
+
+            var h1 = document.createElement("p");
+            p.appendChild(h1);
+            var text = document.createTextNode("Autores Participantes: ");
+            h1.appendChild(text);
+
+            var entidadID = data.entities[index].entity.id;
+            $.ajax({
+                type: "GET",
+                url: '/api/v1/entities/' + entidadID + '/persons',
+                headers: {"Authorization": token},
+                dataType: 'json',
+                success: function (data) {
+                    if(data.persons.length == 0){
+                        var text = document.createTextNode("Ninguna");
+                        h1.appendChild(text);
+                    }
+                    for(var j = 0; j< data.persons.length; j++){
+                        if(j==0){
+                            var text = document.createTextNode(data.persons[index].person.name);
+                            h1.appendChild(text);
+                        }else{
+                            var text = document.createTextNode(', ' + data.persons[index].person.name);
+                            h1.appendChild(text);
+                        }
+                    }
+                }
+            });
+            var h2 = document.createElement("p");
+            p.appendChild(h2);
+            var text = document.createTextNode("Productos Participantes: ");
+            h2.appendChild(text);
+
+            $.ajax({
+                type: "GET",
+                url: '/api/v1/entities/' + entidadID + '/products',
+                headers: {"Authorization": token},
+                dataType: 'json',
+                success: function (data) {
+                    if(data.products.length == 0){
+                        var text = document.createTextNode("Ninguna");
+                        h2.appendChild(text);
+                    }
+                    for(var j = 0; j< data.products.length; j++){
+                        if(j==0){
+                            var text = document.createTextNode(data.products[index].product.name);
+                            h2.appendChild(text);
+                        }else{
+                            var text = document.createTextNode(', ' + data.products[index].products.name);
+                            h2.appendChild(text);
+                        }
+                    }
+                }
+            });
             /*
             var text = document.createTextNode("Personas Participantes: ");
             p.appendChild(text);
@@ -578,6 +722,7 @@ function readProduct(){
     let target = sessionStorage.getItem('targetGuardado');
     let token = sessionStorage.getItem('token');
     let rol = sessionStorage.getItem('rol');
+    let name = sessionStorage.getItem('userName');
 
     console.log(token);
     console.log(target);
@@ -598,6 +743,12 @@ function readProduct(){
 
             var nav = document.getElementById("navProduct");
 
+            var p = document.createElement("p");
+            var text = document.createTextNode("Usuario "+name);
+            p.appendChild(text);
+            nav.appendChild(p);
+            p.style.color = "#ffffff";
+
             var input=document.createElement("input");
             nav.appendChild(input);
             input.setAttribute("type","button");
@@ -615,13 +766,13 @@ function readProduct(){
                 nav.appendChild(input);
                 input.setAttribute("type","button");
                 input.setAttribute("value","Añadir Relación");
-                input.setAttribute("onclick","location.href='CREAR_RELACION.html';");
+                input.setAttribute("onclick","location.href='CREAR_RELACION_PRODUCTO.html';");
 
                 var input=document.createElement("input");
                 nav.appendChild(input);
                 input.setAttribute("type","button");
                 input.setAttribute("value","Eliminar Relación");
-                input.setAttribute("onclick","location.href='ELIMINAR_RELACION.html';");
+                input.setAttribute("onclick","location.href='ELIMINAR_RELACION_PRODUCTO.html';");
             }
 
             var section = document.getElementById("productInfo");
@@ -683,7 +834,7 @@ function readProduct(){
             }
             var h1 = document.createElement("p");
             p.appendChild(h1);
-            var text = document.createTextNode("Personas Participantes: ");
+            var text = document.createTextNode("Autores Participantes: ");
             h1.appendChild(text);
 
             var productoID = data.products[index].product.id;
@@ -721,7 +872,7 @@ function readProduct(){
                 success: function (data) {
                     if(data.entities.length == 0){
                         var text = document.createTextNode("Ninguna");
-                        h1.appendChild(text);
+                        h2.appendChild(text);
                     }
                     for(var j = 0; j< data.entities.length; j++){
                         if(j==0){
@@ -852,19 +1003,33 @@ function createProduct(){
 function editProduct(){
     let target = sessionStorage.getItem('targetGuardado');
     let token = sessionStorage.getItem('token');
-    console.log(target);
-    if(target != "null"){
-        var boton = document.getElementById("botonCreacion");
-        boton.setAttribute("value","Actualizar Datos");
-    }
+    let name = sessionStorage.getItem('userName');
 
+    console.log(target);
     var nav = document.getElementById("navProduct");
+
+    let p = document.createElement("p");
+    let text = document.createTextNode("Usuario "+name);
+    p.appendChild(text);
+    nav.appendChild(p);
+    p.style.color = "#ffffff";
 
     var input=document.createElement("input");
     nav.appendChild(input);
     input.setAttribute("type","button");
     input.setAttribute("value","Indice");
     input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
+
+    if(target != "null"){
+        var boton = document.getElementById("botonCreacion");
+        boton.setAttribute("value","Actualizar Datos");
+
+        var input=document.createElement("input");
+        nav.appendChild(input);
+        input.setAttribute("type","button");
+        input.setAttribute("value","Atras");
+        input.setAttribute("onclick","location.href='MOSTRAR_PRODUCTO.html';");
+    }
 
     $.ajax({
         type: "GET",
@@ -979,6 +1144,8 @@ function createPerson(){
 function editPerson(){
     let target = sessionStorage.getItem('targetGuardado');
     let token = sessionStorage.getItem('token');
+    var name = sessionStorage.getItem('userName');
+
     console.log(target);
     if(target != "null"){
         var boton = document.getElementById("botonCreacion");
@@ -987,11 +1154,23 @@ function editPerson(){
 
     var nav = document.getElementById("navPerson");
 
+    var p = document.createElement("p");
+    var text = document.createTextNode("Usuario "+name);
+    p.appendChild(text);
+    nav.appendChild(p);
+    p.style.color = "#ffffff";
+
     var input=document.createElement("input");
     nav.appendChild(input);
     input.setAttribute("type","button");
     input.setAttribute("value","Indice");
     input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
+
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Atras");
+    input.setAttribute("onclick","location.href='MOSTRAR_AUTOR.html';");
 
     $.ajax({
         type: "GET",
@@ -1106,6 +1285,8 @@ function createEntity(){
 function editEntity(){
     let target = sessionStorage.getItem('targetGuardado');
     let token = sessionStorage.getItem('token');
+    var name = sessionStorage.getItem('userName');
+
     console.log(target);
     if(target != "null"){
         var boton = document.getElementById("botonCreacion");
@@ -1114,11 +1295,23 @@ function editEntity(){
 
     var nav = document.getElementById("navEntity");
 
+    var p = document.createElement("p");
+    var text = document.createTextNode("Usuario "+name);
+    p.appendChild(text);
+    nav.appendChild(p);
+    p.style.color = "#ffffff";
+
     var input=document.createElement("input");
     nav.appendChild(input);
     input.setAttribute("type","button");
     input.setAttribute("value","Indice");
     input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
+
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Atras");
+    input.setAttribute("onclick","location.href='MOSTRAR_ENTIDAD.html';");
 
     $.ajax({
         type: "GET",
@@ -1191,6 +1384,11 @@ function loadProfile() {
             var fNacimiento =  data.users[index].user.birthDate;
 
             var nav = document.getElementById("navProfile");
+            var p = document.createElement("p");
+            var text = document.createTextNode("Usuario "+name);
+            p.appendChild(text);
+            nav.appendChild(p);
+            p.style.color = "#ffffff";
 
             var input=document.createElement("input");
             nav.appendChild(input);
@@ -1319,17 +1517,29 @@ function getidEntidad(nombre) {
     });
 }
 function editRelationProduct(){
-    let target = sessionStorage.getItem('targetGuardado');
-    let token = sessionStorage.getItem('token');
-
+    var target = sessionStorage.getItem('targetGuardado');
+    var token = sessionStorage.getItem('token');
+    var name = sessionStorage.getItem('userName');
 
     var nav = document.getElementById("navRelaciones");
+
+    var p = document.createElement("p");
+    var text = document.createTextNode("Usuario "+name);
+    p.appendChild(text);
+    nav.appendChild(p);
+    p.style.color = "#ffffff";
 
     var input=document.createElement("input");
     nav.appendChild(input);
     input.setAttribute("type","button");
     input.setAttribute("value","Indice");
     input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
+
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Atras");
+    input.setAttribute("onclick","location.href='MOSTRAR_PRODUCTO.html';");
 
     $.ajax({
         type: "GET",
@@ -1377,8 +1587,16 @@ function editRelationProduct(){
         }
     });
 }
-function loadRelations() {
+function loadRelationsProduct() {
+    var name = sessionStorage.getItem('userName');
+
     var nav = document.getElementById("navRelaciones");
+
+    var p = document.createElement("p");
+    var text = document.createTextNode("Usuario "+name);
+    p.appendChild(text);
+    nav.appendChild(p);
+    p.style.color = "#ffffff";
 
     var input=document.createElement("input");
     nav.appendChild(input);
@@ -1386,7 +1604,13 @@ function loadRelations() {
     input.setAttribute("value","Indice");
     input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
 
-    let token = sessionStorage.getItem('token');
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Atras");
+    input.setAttribute("onclick","location.href='MOSTRAR_PRODUCTO.html';");
+
+    var token = sessionStorage.getItem('token');
     $.ajax({
         type: "GET",
         url: '/api/v1/persons',
@@ -1420,7 +1644,7 @@ function loadRelations() {
         }
     });
 }
-function createRelation(){
+function createRelationProduct(){
     let target = sessionStorage.getItem('targetGuardado');
     let token = sessionStorage.getItem('token');
 
@@ -1470,7 +1694,7 @@ function createRelation(){
         });
     }
 }
-function deleteRelation(){
+function deleteRelationProduct(){
     let target = sessionStorage.getItem('targetGuardado');
     let token = sessionStorage.getItem('token');
 
@@ -1520,6 +1744,436 @@ function deleteRelation(){
         });
     }
 }
+function loadRelationsEntity() {
+    var name = sessionStorage.getItem('userName');
+
+    var nav = document.getElementById("navRelaciones");
+
+    var p = document.createElement("p");
+    var text = document.createTextNode("Usuario "+name);
+    p.appendChild(text);
+    nav.appendChild(p);
+    p.style.color = "#ffffff";
+
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Indice");
+    input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
+
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Atras");
+    input.setAttribute("onclick","location.href='MOSTRAR_ENTIDAD.html';");
+
+    var token = sessionStorage.getItem('token');
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/persons',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+            let listaAutores = document.getElementById("listaAutores");
+            for(let i = 0; i < data.persons.length; i++){
+                var autor = document.createElement("option");
+                autor.setAttribute("value", i);
+                var text = document.createTextNode(data.persons[i].person.name);
+                autor.appendChild(text);
+                listaAutores.appendChild(autor);
+            }
+        }
+    });
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/products',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+            let listaProductos = document.getElementById("listaProductos");
+            for(let i = 0; i < data.products.length; i++){
+                var producto = document.createElement("option");
+                producto.setAttribute("value", i);
+                var text = document.createTextNode(data.products[i].product.name);
+                producto.appendChild(text);
+                listaProductos.appendChild(producto);
+            }
+        }
+    });
+}
+function createRelationEntity(){
+    let target = sessionStorage.getItem('targetGuardado');
+    let token = sessionStorage.getItem('token');
+
+    var nombreAutor = document.getElementById("autor");
+    var nombreProducto = document.getElementById("producto");
+    console.log(nombreAutor);
+    console.log(nombreProducto);
+
+    console.log(nombreAutor.selectedIndex);
+    console.log(nombreProducto.selectedIndex);
+    debugger;
+
+    var autor = nombreAutor.options[nombreAutor.selectedIndex].text;
+    var producto = nombreProducto.options[nombreProducto.selectedIndex].text;
+
+    getidEntidad(target);
+    var idEntidad = sessionStorage.getItem('idEntidad');
+    console.log(idEntidad);
+
+    if(autor != "Elige una opción"){
+        getidAutor(autor);
+        var idAutor = sessionStorage.getItem('idAutor');
+
+        $.ajax({
+            type: "PUT",
+            url: '/api/v1/entities/' + idEntidad + '/persons/add/' + idAutor,
+            headers: {"Authorization": token},
+            dataType: 'json',
+            success: function (data, status, response) {
+                alert("Relación añadida correctamente");
+            }
+        });
+    }
+    if(producto != "Elige una opción"){
+        getidProducto(producto);
+        var idProducto = sessionStorage.getItem('idProducto');
+        console.log(idProducto);
+        $.ajax({
+            type: "PUT",
+            url: '/api/v1/entities/' + idEntidad + '/products/add/' + idProducto,
+            headers: {"Authorization": token},
+            dataType: 'json',
+            success: function (data, status, response) {
+                alert("Relación añadida correctamente");
+            }
+        });
+    }
+}
+function editRelationEntity(){
+    var target = sessionStorage.getItem('targetGuardado');
+    var token = sessionStorage.getItem('token');
+    var name = sessionStorage.getItem('userName');
+
+    var nav = document.getElementById("navRelaciones");
+
+    var p = document.createElement("p");
+    var text = document.createTextNode("Usuario "+name);
+    p.appendChild(text);
+    nav.appendChild(p);
+    p.style.color = "#ffffff";
+
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Indice");
+    input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
+
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Atras");
+    input.setAttribute("onclick","location.href='MOSTRAR_ENTIDAD.html';");
+
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/entities',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+            var index = data.entities.map(function (x) {
+                return x.entity.name
+            }).indexOf(target);
+            var entidadID = data.entities[index].entity.id;
+            $.ajax({
+                type: "GET",
+                url: '/api/v1/entities/' + entidadID + '/persons',
+                headers: {"Authorization": token},
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    for (var j = 0; j < data.persons.length; j++) {
+                        let listaAutores = document.getElementById("listaAutores");
+                        var autor = document.createElement("option");
+                        autor.setAttribute("value", j);
+                        var text = document.createTextNode(data.persons[j].person.name);
+                        autor.appendChild(text);
+                        listaAutores.appendChild(autor);
+                    }
+                }
+            });
+            $.ajax({
+                type: "GET",
+                url: '/api/v1/entities/' + entidadID + '/products',
+                headers: {"Authorization": token},
+                dataType: 'json',
+                success: function (data) {
+                    let listaProductos = document.getElementById("listaProductos");
+                    for (var j = 0; j < data.products.length; j++) {
+                        var producto = document.createElement("option");
+                        producto.setAttribute("value", j);
+                        var text = document.createTextNode(data.products[j].product.name);
+                        producto.appendChild(text);
+                        listaProductos.appendChild(producto);
+                    }
+                }
+            });
+        }
+    });
+}
+function deleteRelationEntity(){
+    let target = sessionStorage.getItem('targetGuardado');
+    let token = sessionStorage.getItem('token');
+
+    var nombreAutor = document.getElementById("autor");
+    var nombreProducto = document.getElementById("producto");
+
+    var autor = nombreAutor.options[nombreAutor.selectedIndex].text;
+    var producto = nombreProducto .options[nombreProducto .selectedIndex].text;
+
+    getidEntidad(target);
+    var idEntidad = sessionStorage.getItem('idEntidad');
+
+    if(autor != "Elige una opción"){
+        getidAutor(autor);
+        var idAutor = sessionStorage.getItem('idAutor');
+
+        $.ajax({
+            type: "PUT",
+            url: '/api/v1/entities/' + idEntidad + '/persons/rem/' + idAutor,
+            headers: {"Authorization": token},
+            dataType: 'json',
+            success: function (data, status, response) {
+                alert("Relación elminada correctamente");
+            }
+        });
+    }
+    if(producto != "Elige una opción"){
+        getidProducto(producto);
+        var idProducto = sessionStorage.getItem('idProducto');
+
+        $.ajax({
+            type: "PUT",
+            url: '/api/v1/entities/' + idEntidad + '/products/rem/' + idProducto,
+            headers: {"Authorization": token},
+            dataType: 'json',
+            success: function (data, status, response) {
+                alert("Relación elminada correctamente");
+            }
+        });
+    }
+}
+function loadRelationsPerson() {
+    var name = sessionStorage.getItem('userName');
+
+    var nav = document.getElementById("navRelaciones");
+
+    var p = document.createElement("p");
+    var text = document.createTextNode("Usuario "+name);
+    p.appendChild(text);
+    nav.appendChild(p);
+    p.style.color = "#ffffff";
+
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Indice");
+    input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
+
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Atras");
+    input.setAttribute("onclick","location.href='MOSTRAR_AUTOR.html';");
+
+    var token = sessionStorage.getItem('token');
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/products',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+            let listaProductos = document.getElementById("listaProductos");
+            for(let i = 0; i < data.products.length; i++){
+                var producto = document.createElement("option");
+                producto.setAttribute("value", i);
+                var text = document.createTextNode(data.products[i].product.name);
+                producto.appendChild(text);
+                listaProductos.appendChild(producto);
+            }
+        }
+    });
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/entities',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+            let listaEntidades = document.getElementById("listaEntidades");
+            for(let i = 0; i < data.entities.length; i++){
+                var entidad = document.createElement("option");
+                entidad.setAttribute("value", i);
+                var text = document.createTextNode(data.entities[i].entity.name);
+                entidad.appendChild(text);
+                listaEntidades.appendChild(entidad);
+            }
+        }
+    });
+}
+function createRelationPerson(){
+    let target = sessionStorage.getItem('targetGuardado');
+    let token = sessionStorage.getItem('token');
+
+    var nombreProducto = document.getElementById("producto");
+    var nombreEntidad = document.getElementById("entidad");
+
+    var producto = nombreProducto.options[nombreProducto.selectedIndex].text;
+    var entidad = nombreEntidad.options[nombreEntidad.selectedIndex].text;
+
+    getidAutor(target);
+    var idAutor = sessionStorage.getItem('idAutor');
+
+    if(producto != "Elige una opción"){
+        getidProducto(producto);
+        var idProducto = sessionStorage.getItem('idProducto');
+        $.ajax({
+            type: "PUT",
+            url: '/api/v1/persons/' + idAutor + '/products/add/' + idProducto,
+            headers: {"Authorization": token},
+            dataType: 'json',
+            success: function (data, status, response) {
+                alert("Relación añadida correctamente");
+            }
+        });
+    }
+    if(entidad != "Elige una opción"){
+        getidEntidad(entidad);
+        var idEntidad = sessionStorage.getItem('idEntidad');
+        console.log(idEntidad);
+        debugger;
+        $.ajax({
+            type: "PUT",
+            url: '/api/v1/persons/' + idAutor + '/entities/add/' + idEntidad,
+            headers: {"Authorization": token},
+            dataType: 'json',
+            success: function (data, status, response) {
+                alert("Relación añadida correctamente");
+            }
+        });
+    }
+}
+function editRelationPerson(){
+    var target = sessionStorage.getItem('targetGuardado');
+    var token = sessionStorage.getItem('token');
+    var name = sessionStorage.getItem('userName');
+
+    var nav = document.getElementById("navRelaciones");
+
+    var p = document.createElement("p");
+    var text = document.createTextNode("Usuario "+name);
+    p.appendChild(text);
+    nav.appendChild(p);
+    p.style.color = "#ffffff";
+
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Indice");
+    input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
+
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Atras");
+    input.setAttribute("onclick","location.href='MOSTRAR_AUTOR.html';");
+
+    $.ajax({
+        type: "GET",
+        url: '/api/v1/persons',
+        headers: {"Authorization": token},
+        dataType: 'json',
+        success: function (data) {
+            var index = data.persons.map(function (x) {
+                return x.person.name
+            }).indexOf(target);
+            var autorID = data.persons[index].person.id;
+            $.ajax({
+                type: "GET",
+                url: '/api/v1/persons/' + autorID + '/products',
+                headers: {"Authorization": token},
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    for (var j = 0; j < data.products.length; j++) {
+                        let listaProductos = document.getElementById("listaProductos");
+                        var producto = document.createElement("option");
+                        producto.setAttribute("value", j);
+                        var text = document.createTextNode(data.products[j].product.name);
+                        producto.appendChild(text);
+                        listaProductos.appendChild(producto);
+                    }
+                }
+            });
+            $.ajax({
+                type: "GET",
+                url: '/api/v1/persons/' + autorID + '/entities',
+                headers: {"Authorization": token},
+                dataType: 'json',
+                success: function (data) {
+                    let listaEntidades = document.getElementById("listaEntidades");
+                    for (var j = 0; j < data.entities.length; j++) {
+                        var entidad = document.createElement("option");
+                        entidad.setAttribute("value", j);
+                        var text = document.createTextNode(data.entities[j].entity.name);
+                        entidad.appendChild(text);
+                        listaEntidades.appendChild(entidad);
+                    }
+                }
+            });
+        }
+    });
+}
+function deleteRelationPerson(){
+    let target = sessionStorage.getItem('targetGuardado');
+    let token = sessionStorage.getItem('token');
+
+    var nombreProducto = document.getElementById("producto");
+    var nombreEntidad = document.getElementById("entidad");
+
+    var producto = nombreProducto.options[nombreProducto.selectedIndex].text;
+    var entidad = nombreEntidad.options[nombreEntidad.selectedIndex].text;
+
+    getidAutor(target);
+    var idAutor = sessionStorage.getItem('idAutor');
+
+    if(producto != "Elige una opción"){
+        getidProducto(producto);
+        var idProducto = sessionStorage.getItem('idProducto');
+
+        $.ajax({
+            type: "PUT",
+            url: '/api/v1/persons/' + idAutor + '/products/rem/' + idProducto,
+            headers: {"Authorization": token},
+            dataType: 'json',
+            success: function (data, status, response) {
+                alert("Relación elminada correctamente");
+            }
+        });
+    }
+    if(entidad != "Elige una opción"){
+        getidEntidad(entidad);
+        var idEntidad = sessionStorage.getItem('idEntidad');
+        $.ajax({
+            type: "PUT",
+            url: '/api/v1/persons/' + idAutor + '/entities/rem/' + idEntidad,
+            headers: {"Authorization": token},
+            dataType: 'json',
+            success: function (data, status, response) {
+                alert("Relación elminada correctamente");
+            }
+        });
+    }
+}
 function editProfile(){
     let token = sessionStorage.getItem('token');
     let name = sessionStorage.getItem('userName');
@@ -1529,11 +2183,23 @@ function editProfile(){
 
     var nav = document.getElementById("navPerfil");
 
+    let p = document.createElement("p");
+    let text = document.createTextNode("Usuario "+name);
+    p.appendChild(text);
+    nav.appendChild(p);
+    p.style.color = "#ffffff";
+
     var input=document.createElement("input");
     nav.appendChild(input);
     input.setAttribute("type","button");
     input.setAttribute("value","Indice");
     input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
+
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Perfil");
+    input.setAttribute("onclick","location.href='PERFIL.html';");
 
     $.ajax({
         type: "GET",
@@ -1661,6 +2327,12 @@ function loadUsers() {
     let nombreU = sessionStorage.getItem('userName');
     var nav = document.getElementById("navUsuarios");
 
+    var p = document.createElement("p");
+    var text = document.createTextNode("Usuario "+name);
+    p.appendChild(text);
+    nav.appendChild(p);
+    p.style.color = "#ffffff";
+
     var input=document.createElement("input");
     nav.appendChild(input);
     input.setAttribute("type","button");
@@ -1674,7 +2346,9 @@ function loadUsers() {
     input.setAttribute("onclick","location.href='SOLICITUDES_REGISTRO.html';");
 
     var tablaUsers = document.getElementById("tablaUsuarios");
-
+    var tbody = document.createElement("tbody");
+    tbody.setAttribute("id", "cuerpoUsuarios");
+    tablaUsers.appendChild(tbody);
     $.ajax({
         type: "GET",
         url: '/api/v1/users',
@@ -1683,8 +2357,6 @@ function loadUsers() {
         success: function (data) {
             for(var i = 0; i < data.users.length; i++){
                 if((data.users[i].user.username != nombreU) && (data.users[i].user.authorized == 1)){
-                    var tbody = document.createElement("tbody");
-                    tablaUsers.appendChild(tbody);
 
                     var tr = document.createElement("tr");
                     tbody.appendChild(tr);
@@ -1746,6 +2418,11 @@ function loadUsers() {
                         input.setAttribute("value","Desactivar Usuario");
                         input.setAttribute("onclick","desactiveUser(event);location.href='USUARIOS.html';");
                     }
+                    var input=document.createElement("input");
+                    tr.appendChild(input);
+                    input.setAttribute("type","button");
+                    input.setAttribute("value","Dar de baja usuario");
+                    input.setAttribute("onclick","deleteUser(event);location.href='USUARIOS.html';");
                 }
             }
         }
@@ -1845,8 +2522,16 @@ function validateRegister() {
     debugger;
 }
 function loadUsersRegister() {
-    let token = sessionStorage.getItem('token');
+    var token = sessionStorage.getItem('token');
+    var name = sessionStorage.getItem('userName');
+
     var nav = document.getElementById("navUsuarios");
+
+    var p = document.createElement("p");
+    var text = document.createTextNode("Usuario "+name);
+    p.appendChild(text);
+    nav.appendChild(p);
+    p.style.color = "#ffffff";
 
     var input=document.createElement("input");
     nav.appendChild(input);
@@ -1854,8 +2539,15 @@ function loadUsersRegister() {
     input.setAttribute("value","Indice");
     input.setAttribute("onclick","location.href='SHOWED_INDEX.html';");
 
-    var tablaUsers = document.getElementById("tablaUsuarios");
+    var input=document.createElement("input");
+    nav.appendChild(input);
+    input.setAttribute("type","button");
+    input.setAttribute("value","Atras");
+    input.setAttribute("onclick","location.href='USUARIOS.html';");
 
+    var tablaUsers = document.getElementById("tablaUsuarios");
+    var tbody = document.createElement("tbody");
+    tablaUsers.appendChild(tbody);
     $.ajax({
         type: "GET",
         url: '/api/v1/users',
@@ -1864,8 +2556,6 @@ function loadUsersRegister() {
         success: function (data) {
             for(var i = 0; i < data.users.length; i++){
                 if(data.users[i].user.authorized == 0){
-                    var tbody = document.createElement("tbody");
-                    tablaUsers.appendChild(tbody);
 
                     var tr = document.createElement("tr");
                     tbody.appendChild(tr);
@@ -1899,10 +2589,19 @@ function loadUsersRegister() {
                     text = document.createTextNode(data.users[i].user.birthDate);
                     td.appendChild(text);
 
+                    var select = document.createElement("select");
+
+                    select.innerHTML = `<select>
+                    <option selected="" value="0">Selecciona un Rol</option>
+                    <optgroup label="Roles">
+                    <option value="0">Writer</option>
+                    <option value="1">Reader</option>
+                    </optgroup>
+                    </select>`;
+                    select.setAttribute("id", "rol");
                     var td = document.createElement("td");
                     tr.appendChild(td);
-                    text = document.createTextNode(data.users[i].user.role);
-                    td.appendChild(text);
+                    td.appendChild(select);
 
                     var input=document.createElement("input");
                     tr.appendChild(input);
@@ -1914,22 +2613,48 @@ function loadUsersRegister() {
         }
     });
 }
+
 function validateUser(event){
     let token = sessionStorage.getItem('token');
     var idTarget = event.target.parentElement.firstChild.innerHTML;
-
-    var usuario = {
-        active: 1,
-        authorized: 1
+    var nombreRol = document.getElementById("rol");
+    var rol = nombreRol.options[nombreRol.selectedIndex].text;
+    console.log(rol);
+    debugger;
+    if(rol != "Selecciona un Rol"){
+        var usuario = {
+            active: 1,
+            authorized: 1,
+            role: rol
+        }
+        $.ajax({
+            type: "PUT",
+            url: '/api/v1/users/'+idTarget,
+            headers: {"Authorization": token},
+            dataType: 'json',
+            data: usuario,
+            success: function (data) {
+                alert("Usuario validado correctamente");
+            }
+        });
+    }else{
+        alert("Error al validar el usuario, debes seleccionar un Rol")
     }
+}
+function deleteUser(event){
+
+    let token = sessionStorage.getItem('token');
+    var usuarios = document.getElementById("cuerpoUsuarios");
+
+    var idTarget = event.target.parentElement.firstChild.innerHTML;
+
     $.ajax({
-        type: "PUT",
+        type: "DELETE",
         url: '/api/v1/users/'+idTarget,
         headers: {"Authorization": token},
         dataType: 'json',
-        data: usuario,
         success: function (data) {
-            alert("Usuario validado correctamente");
+            alert("Usuario eliminado correctamente");
         }
     });
 }

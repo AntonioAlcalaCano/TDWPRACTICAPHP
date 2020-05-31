@@ -11,7 +11,7 @@
     <link href="estilo.css" type="text/css" rel="stylesheet" media="">
 </head>
 
-<body onload="loadRelations();">
+<body onload="loadRelationsPerson();">
 <header>
     <b>Anales de la ciencia</b>
 </header>
@@ -19,10 +19,10 @@
 </nav>
 <div id="listas">
     <form id="creacionFormulario">
-        <label>Añadir relación con autor: </label>
-        <select id = "autor" name="autores">
+        <label>Añadir relación con producto: </label>
+        <select id = "producto" name="productos">
             <option selected value="0"> Elige una opción </option>
-            <optgroup id = "listaAutores" label="Autores">
+            <optgroup id = "listaProductos" label="Productos">
             </optgroup>
         </select>
         <br><br>
@@ -33,7 +33,7 @@
             </optgroup>
         </select>
         <br><br><br>
-        <input type="submit" value="Crear Relación" onclick="createRelation()" id= "botonCreacion">
+        <input type="submit" value="Crear Relación" onclick="createRelationPerson()" id= "botonCreacion">
     </form>
 </div>
 

@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+    <title>TDW  PRACTICA  JAVASCRIPT</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="TDW  PRACTICA  JAVASCRIPT">
+    <meta name="keywords" content="TDW  PRACTICA  JAVASCRIPT">
+    <meta name="author" content="Antonio Alcalá Cano">
+    <script src="./codigo.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <link href="estilo.css" type="text/css" rel="stylesheet" media="">
+</head>
+
+<body onload="loadRelationsEntity();">
+<header>
+    <b>Anales de la ciencia</b>
+</header>
+<nav id="navRelaciones">
+</nav>
+<div id="listas">
+    <form id="creacionFormulario">
+        <label>Añadir relación con autor: </label>
+        <select id = "autor" name="autores">
+            <option selected value="0"> Elige una opción </option>
+            <optgroup id = "listaAutores" label="Autores">
+            </optgroup>
+        </select>
+        <br><br>
+        <label>Añadir relación con producto: </label>
+        <select id = "producto"  name="productos">
+            <option selected value="0"> Elige una opción </option>
+            <optgroup id = "listaProductos" label="Productos">
+            </optgroup>
+        </select>
+        <br><br><br>
+        <input type="submit" value="Crear Relación" onclick="createRelationEntity()" id= "botonCreacion">
+    </form>
+</div>
+
+</body>
+</html>
