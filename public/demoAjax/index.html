@@ -13,6 +13,7 @@
         <label for="password">Contraseña: </label>
         <input type="password" id="password" name="password" placeholder="Palabra clave"/>
         <input type="button" id="btn-login" value="Login" />
+        <input onclick="location.href='REGISTRO.html'" type="button" id="btn-register" value="Registrarse" />
     </form>
     <hr/>
     <code><span id="resultado"></span></code>
@@ -28,17 +29,30 @@
         ).success(function (data, textStatus, request) {
             // Si es correcto => mostrar pagina
             authHeader = request.getResponseHeader('Authorization');
-            guardarToken(authHeader);
-            guardarUsername($("#username").val());
+            var userName = $("#username").val();
+            checkAll(authHeader, userName);
+            /*
             guardarRol();
             let rol = sessionStorage.getItem('rol');
+            let active = sessionStorage.getItem('active');
+            let authorized = sessionStorage.getItem('authorized');
             console.log(rol);
-            debugger;
-            if(rol == "writer"){
-                window.location.replace("./SHOWED_INDEX.html");
-            }else{
-                window.location.replace("./OPENED_INDEX.html");
-            }
+            console.log(active);
+            console.log(authorized);
+
+            if((authorized == "true") && (active == "true")){
+                if(rol == "writer"){
+                    window.location.replace("./SHOWED_INDEX.html");
+                }else{
+                    window.location.replace("./OPENED_INDEX.html");
+                }
+            }else if((authorized == "false")){
+                alert("Error al iniciar sesión, la cuenta aun no ha sido validada por un writer");
+                window.location.replace("./index.html");
+            }else if((authorized == "true") && (active == "false")){
+                alert("Error al iniciar sesión, la cuenta no esta activa.");
+                window.location.replace("./index.html");
+            }*/
 
         }).fail(function () {
             alert("Incorrecto :(")

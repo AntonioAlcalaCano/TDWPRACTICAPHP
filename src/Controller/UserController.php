@@ -165,7 +165,7 @@ class UserController
     public function post(Request $request, Response $response): Response
     {
         // Error 403 scope: writer
-        if (false === $this->checkTokenScope($request->getAttribute('token'), Role::ROLE_WRITER)) {
+        if (false === $this->checkTokenScope($request->getAttribute('token'), ((Role::ROLE_WRITER)|| (Role::null)))) {
             return Error::error($response, StatusCode::STATUS_FORBIDDEN);
         }
 

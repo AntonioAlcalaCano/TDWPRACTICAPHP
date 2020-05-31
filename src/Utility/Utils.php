@@ -147,8 +147,8 @@ trait Utils
         string $email,
         string $password,
         bool $isWriter = false,
-        bool $isAuthorized = false,
-        bool $isActive = true
+        bool $isAuthorized,
+        bool $isActive
     ): int {
         $user = new User(
             $username,
